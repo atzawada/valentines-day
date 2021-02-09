@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-{{ .Values.env }}
+  labels:
+    app: {{ .Chart.Name }}-{{ .Values.env }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}-{{ .Values.env }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-{{ .Values.env }}
+    spec:
+      volumes:
+      - name: messages-volume
+        configMap:
+          name: {{ .Release.Name }}-{{ .Values.env }}
+      containers:
+      - name: {{ .Chart.Name }}-{{ .Values.env }}
+        image: {{.Values.image.repository}}:{{ .Values.image.tag }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: {{ .Values.port }}
+        volumeMounts:
+        - name: messages-volume
+          mountPath: /server/msg/messages
+          subPath: messages
+        env:
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: valentines-day-aws-{{ .Values.env }}
+              key: id
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: valentines-day-aws-{{ .Values.env }}
+              key: secret
+        - name: MESSAGE_DESTINATION
+          valueFrom:
+            secretKeyRef:
+              name: valentines-day-msg-{{ .Values.env }}
+              key: destination
+        - name: SUPER_SECRET_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: valentines-day-msg-{{ .Values.env }}
+              key: password
+        - name: AWS_REGION
+          value: "{{ .Values.aws.region }}"
+        - name: PORT
+          value: "{{ .Values.port }}"
+        - name: TZ
+          value: {{ .Values.timezone }}
+        - name: MESSAGE_LIST_LOCATION
+          value: /server/msg/messages
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.probes.path }}
+            port: {{ .Values.port }}
+          initialDelaySeconds: {{ .Values.probes.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.probes.timeoutSeconds }}
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.probes.path }}
+            port: {{ .Values.port }}
+          initialDelaySeconds: {{ .Values.probes.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.probes.timeoutSeconds }}
+          periodSeconds: {{ .Values.probes.periodSeconds }}

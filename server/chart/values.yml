@@ -1,0 +1,27 @@
+env: beta # Environment name. Will be appended to all objects that the chart creates.
+image:
+  repository: server.atzawada.io:32000/valentines-day-server # Repository to pull from
+  tag: 0.0.1 # Docker image tag to utilize
+
+port: 8080
+externalPort: 8080
+
+timezone: America/New_York
+
+frontend-url: "*" # Used for CORS. Set to the URL of your frontend site.
+
+# Use these to set up your service. If you need anything other than a loadBalancer, good luck. PRs are welcome!
+service:
+  annotations: {}
+  loadBalancerIP: localhost
+
+probes:
+  path: /ping
+  initialDelaySeconds: 10
+  timeoutSeconds: 5
+  periodSeconds: 2
+
+aws:
+  region: us-east-1 # Set your default AWS region.
+
+messages: "" # Put your messages in a multi line string here. 1 line per message.
