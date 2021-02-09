@@ -4,11 +4,14 @@
   "description": "Handles requests for Valentine's Day app.",
   "main": "./bin/init.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "compile": "tsc",
+    "start": "node ./bin/init.js"
   },
   "author": "atzawada",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.840.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
