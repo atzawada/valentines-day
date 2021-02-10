@@ -54,6 +54,8 @@ spec:
           value: "{{ .Values.port }}"
         - name: TZ
           value: {{ .Values.timezone }}
+        - name: FRONTEND_URL
+          value: "{{ .Values.frontend.url }}"
         - name: MESSAGE_LIST_LOCATION
           value: /server/msg/messages
         livenessProbe:

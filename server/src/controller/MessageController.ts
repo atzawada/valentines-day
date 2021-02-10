@@ -13,7 +13,6 @@ export class MessageController {
     }
 
     async sendMessage(request: Request, response: Response) {
-        console.log(request.body.password);
         if (request.body.password !== process.env.SUPER_SECRET_PASSWORD) {
             response.status(401).send();
             return;
